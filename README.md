@@ -28,7 +28,3 @@ optional arguments:
 peteer.py
 采用pyppeteer异步执行模式，page.evaluate将文章所有页面加载，当网页及所有资源加载后，将网页转成pdf保存到本地。
 ```
-
-
-
-

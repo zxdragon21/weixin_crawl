@@ -372,7 +372,7 @@ def pipe():
 
 def process_input():
     Input.artis_cache = {}
-    ac = os.path.join('arti.cache.list')
+    ac = os.path.join('arti.xyrj.list')
     if os.path.isfile(ac):
         with open(ac, 'rt') as fi:
             line = fi.readline()
@@ -380,7 +380,7 @@ def process_input():
                 Input.arti_cache[line.strip()] = True
                 line = fi.readline()
         
-    uc = os.path.join('url.cache.list')
+    uc = os.path.join('url.xyrj.list')
     if os.path.isfile(uc):
         with open(uc, 'rt') as fi:
             line = fi.readline()
@@ -393,13 +393,13 @@ def append_arti_cache(arti_link):
     arti_link = arti_link.strip()
     if not arti_link:
         return
-    ac = os.path.join('arti.cache.list')
+    ac = os.path.join('arti.xyrj.list')
     with open(ac, "a") as myfile:
         myfile.write(f"{arti_link}\n")
         Input.arti_cache[arti_link] = True
 
 def append_url_cache(urls):
-    ac = os.path.join('url.cache.list')
+    ac = os.path.join('url.xyrj.list')
     with open(ac, "a") as myfile:
         for url in urls:
             url = url.strip()
@@ -425,11 +425,11 @@ def save_todo_list(key, dic):
 def main(chrome):
     #会过期, 重新登录后需要重新取得
     if not chrome:
-        if os.path.isfile('chromedriver'):
-            chrome = 'chromedriver'
+        if os.path.isfile('chromedriver.exe'):
+            chrome = 'chromedriver.exe'
         else:
             chrome = input('输入webchrome:').strip()
-    driver = webdriver.Chrome(executable_path=chrome)
+    driver = webdriver.Chrome()
     cookies = json.load(open('cookies.json', 'rb')) if os.path.isfile('cookies.json') else []
     driver.get(Urls.index)
     if not cookies:

@@ -7,7 +7,8 @@ import requests, lxml
 import json
 import re
 from bs4 import BeautifulSoup
-
+from playwright.async_api import async_playwright
+import asyncio
 headers = {
     'Host': 'mp.weixin.qq.com',
     'Connection': 'keep-alive',
@@ -24,26 +25,45 @@ headers = {
 }
 index = 0
 file=r'D:\crawl\wxhub\output\陀乐寺\2023年正月禅修班开示三十二如何决定临终时往生善道还是堕恶道呢？\index.html'
-for page in range(1, 5):
-    url = r'https://mp.weixin.qq.com/mp/relatedarticle?action=getlist&article_url=https%3A%2F%2Fmp.weixin.qq.com%2Fs%2FwZvFaFNhOHzbK0KecTp3IA&__biz=MzU5MjgwMDMwNQ==&mid=2247531038&idx=1&has_related_article_info=0&is_pay=0&is_from_recommand=0&scene=0&subscene=0&is_open_comment=undefined&uin=&key=&pass_ticket=&wxtoken=777&devicetype=&clientversion=&__biz=MzU5MjgwMDMwNQ%3D%3D&appmsg_token=&x5=0&f=json'
+url = r'http://mp.weixin.qq.com/s?__biz=MzIxMDcyMTYzOA==&mid=2247514340&idx=6&sn=3777dd2604eee179298932008e77c13e&chksm=9762b6eda0153ffbff1e39fbdd1aceae8f3e2285c17fa4b25d8fa6e5c9b7cf4aeda00e75b819#rd'
+async def main():
+    async with async_playwright() as p:
+        browser = await p.chromium.launch(headless=True,
+                                    args=['--start-maximized'],
+                                    slow_mo=3000
+                                    )
+        context = await  browser.new_context(viewport={"width":1920,"height":1080})
+        page = await context.new_page()
+        await  page.goto(url,wait_until="networkidle")
+        import pdb
+        print(await page.title())
+        await page.evaluate('''async () => {
+                                    await new
+                                Promise((resolve, reject) => {
+                                    var
+                                totalHeight = 0;
+                                var
+                                distance = 1000;
+                                var
+                                timer = setInterval(() => {
+                                    var
+                                scrollHeight = document.body.scrollHeight;
+                                window.scrollBy(0, distance);
+                                totalHeight += distance;
 
-    response = requests.get(url=url, headers=headers, verify=False)
-    import pdb
-    bs = BeautifulSoup(response.text, "lxml")
-    pdb.set_trace()
-    #general_msg = bs['general_msg_list']
-    div_tag = bs.find('div', class_='rich_media_content')
-    if div_tag:
-        content = div_tag.get_text()
-        print(content)
-    else:
-        print("未找到匹配的<div>标签")
-      # for general in a['list']:
-      #   content_url = general['app_msg_ext_info']['content_url']
-      #   html_data = requests.get(url=content_url, headers=headers, verify=False).text
-      #   img_list = re.findall('<img class=".*?data-src="(.*?)"', html_data)
-      #   print(img_list)
-      #   for img in img_list:
-      #       img_data = requests.get(url=img, verify=False).content
-      #       open(f'img/{index}.jpg', mode='wb').write(img_data)
-      #       index += 1
+                                if (totalHeight >= scrollHeight){
+                                clearInterval(timer);
+                                resolve();
+                                }
+                                }, 500);
+                                });
+                        }''')
+        #pages = await context.background_pages
+        await page.screenshot(path=f'screenshot.png')
+        pdb.set_trace()
+        pdf_file = await page.pdf()
+        with open("test.pdf",'wb') as f:
+            f.write(pdf_file)
+
+asyncio.run(main())
+
